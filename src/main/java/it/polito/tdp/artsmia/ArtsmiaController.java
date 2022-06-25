@@ -1,8 +1,10 @@
 package it.polito.tdp.artsmia;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.artsmia.model.Arco;
 import it.polito.tdp.artsmia.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,7 +33,7 @@ public class ArtsmiaController {
     private Button btnCalcolaPercorso;
 
     @FXML
-    private ComboBox<?> boxRuolo;
+    private ComboBox<String> boxRuolo;
 
     @FXML
     private TextField txtArtista;
@@ -42,7 +44,12 @@ public class ArtsmiaController {
     @FXML
     void doArtistiConnessi(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Calcola artisti connessi");
+    	//txtResult.appendText("Calcola artisti connessi");
+    	List<Arco> result= this.model.getArchi();
+    	txtResult.appendText("Lista degli artisti connessi \n\n");
+    	for(Arco a : result) {
+    		txtResult.appendText(a.toString()+"\n");
+    	}
     }
 
     @FXML
@@ -54,11 +61,21 @@ public class ArtsmiaController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Crea grafo");
+    	//txtResult.appendText("Crea grafo");
+    	String ruolo= this.boxRuolo.getValue();
+    	if(ruolo==null) {
+    		txtResult.appendText("selezionare un ruolo dall'apposita tendina");
+    		return;
+    	}
+    	this.model.creaGrafo(ruolo);
+    	txtResult.appendText("GRAFO CREATO \n");
+    	txtResult.appendText("Numero vertici : "+this.model.nVertici()+"\n");
+    	txtResult.appendText("Numero archi : "+this.model.nArchi());
     }
 
     public void setModel(Model model) {
     	this.model = model;
+    	this.boxRuolo.getItems().addAll(this.model.getRuoli());
     }
 
     
